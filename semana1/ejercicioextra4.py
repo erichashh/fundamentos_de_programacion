@@ -2,12 +2,15 @@
 
 
 mxn = float(input("Cantidad de pesos mexicanos: "))
+cambiousd = float(input("tipo de cambio usd: "))
+cambioeur = float(input("tipo de cambio eur: "))
 
-usd = mxn/18.5
-eur = mxn/21
+equivaleusd = mxn / cambiousd
+equivaleeur = mxn / cambioeur
 
-print(f"{usd:.2f}" " dolares")
-print(f"{eur:.2f}" " euros")
+print(f"{mxn:.2f} mxn equivalen a:")
+print(f"{equivaleusd:.2f} usd")
+print(f"{equivaleeur:.2f} eur")
 
 
 
