@@ -6,4 +6,5 @@ parcial3=float(input("Calificacion del tercer parcial (40%): "))
 
 calfinal= (parcial1*0.3)+(parcial2*0.3)+(parcial3*0.4)
 
-print("La calificacion final es: ", calfinal)
+print("La calificacion final es:",calfinal)
+
