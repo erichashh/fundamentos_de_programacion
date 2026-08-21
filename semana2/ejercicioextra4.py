@@ -2,7 +2,8 @@
 
 altura = int(input("altura de la piramide:"))
 
-for i in range(altura):
-    for j in range(i + 1):
+for x in range(altura):
+    for y in range(x + 1):
         print("*", end="")
     print()
+    

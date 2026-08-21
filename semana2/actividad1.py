@@ -17,13 +17,18 @@ totapagar =0
 contador = 0
 
 while contador < tvisitantes:
-    contador += 1
-    print("Visitante #", contador)
+    print("Visitante #", contador +1)
 
-    edad = int(input("edad del visitante:"))
+    edad_input = int(input("edad del visitante (o salir para terminar):"))
 
-    if edad== "salir":
+    if edad_input== "salir":
         break
+
+    edad=int(edad_input)
+
+    if edad < 0:
+        print("escribe una edad valida")
+        continue
 
     if edad < 3:
         precio = pnino
@@ -45,16 +50,23 @@ while contador < tvisitantes:
         else:
             descuento = 0
 
-        pago = precio - (precio * descuento)
+        montodescuento = precio * descuento
+        pago = precio - montodescuento
         totapagar += pago
         print("pago de este vistitante: ", pago)
 
-        lista_pagos.append(pago)
+        lista_pagos.append((contador +1, edad, tipo, precio, montodescuento, pago))
+        contador +=1
 
 print("Resumen de todo")
 
-for pago in lista_pagos:
-    print("Pago:", pago)
+for numero,edad,tipo,precio,montodescuento,pago  in lista_pagos:
+    print(f"\nVisitante {numero}:")
+    print(f"Edad: {edad}")
+    print(f"tipo de descuento: {tipo}")
+    print(f"precio base: ${precio:.2f}")
+    print(f"Monto de descuento: ${montodescuento:.2f}")
+    print(f"total a pagar: ${pago:.2f}")
 
-print("Total de visitantes:", tvisitantes)
+print("total de visitantes:", tvisitantes)
 print("Total a pagar:", totapagar)
