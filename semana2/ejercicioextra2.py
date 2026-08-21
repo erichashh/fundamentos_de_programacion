@@ -15,7 +15,7 @@ for i in range(visitas):
 promedio = tedades / visitas
 
 print("promedio de edad: ", promedio)
-print("Hay ", adultos, " adultos")
+print("hay ", adultos, " adultos")
 
 
 
