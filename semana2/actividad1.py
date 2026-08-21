@@ -10,6 +10,8 @@ descuentomayor = .12
 descuentoprofe = .10
 descuentoestudiante = .10
 
+DEBUG = False
+
 tvisitantes = int(input("Cuantos visitantes son?"))
 
 lista_pagos = []
@@ -17,9 +19,9 @@ totapagar =0
 contador = 0
 
 while contador < tvisitantes:
-    print("Visitante #", contador +1)
+    print("visitante #", contador +1)
 
-    edad_input = int(input("edad del visitante (o salir para terminar):"))
+    edad_input = (input("edad del visitante (o salir para terminar):"))
 
     if edad_input== "salir":
         break
@@ -38,25 +40,35 @@ while contador < tvisitantes:
         precio = pmayor
 
     tipo = "n"
-    if edad >= 18:
+    if edad >= 3:
         tipo = input("descuento? a=adulto, p=profesor, e=estudiante, n=ni uno: ")
 
-        if tipo == "a":
-            descuento = descuentomayor
-        elif tipo == "p":
-            descuento = descuentoprofe
-        elif tipo == "e":
-            descuento = descuentoestudiante
-        else:
-            descuento = 0
+        if not (tipo == "a" or tipo == "p" or tipo == "e" or tipo == "n"):
+            print("invalido no habra descuento")
+            tipo = "n"
 
-        montodescuento = precio * descuento
-        pago = precio - montodescuento
-        totapagar += pago
-        print("pago de este vistitante: ", pago)
 
-        lista_pagos.append((contador +1, edad, tipo, precio, montodescuento, pago))
-        contador +=1
+
+    if tipo == "a" and edad >= 18:
+        descuento = descuentomayor
+    elif tipo == "p" and edad >= 18:
+        descuento = descuentoprofe
+    elif tipo == "e" and edad >= 3:
+        descuento = descuentoestudiante
+    else:
+        descuento = 0
+
+    if DEBUG:
+        pdb.set_trace()
+    
+
+    montodescuento = precio * descuento
+    pago = precio - montodescuento
+    totapagar += pago
+    print("pago de este vistitante: ", pago)
+
+    lista_pagos.append((contador +1, edad, tipo, precio, montodescuento, pago))
+    contador +=1
 
 print("Resumen de todo")
 
@@ -68,5 +80,8 @@ for numero,edad,tipo,precio,montodescuento,pago  in lista_pagos:
     print(f"Monto de descuento: ${montodescuento:.2f}")
     print(f"total a pagar: ${pago:.2f}")
 
-print("total de visitantes:", tvisitantes)
-print("Total a pagar:", totapagar)
+print("total de visitantes que se registraron:", contador)
+print(f"Total a pagar: {totapagar:.2f}")
+
+
+      
