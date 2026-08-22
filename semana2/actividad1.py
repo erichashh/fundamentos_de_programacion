@@ -1,6 +1,14 @@
 
 
-import pdb
+
+#Programa:  Museo de Antropologia e Historia
+#Nombre: Eric Eduardo Romero Alfaro
+#Matricula: AL03029612
+#Fecha:21/08/2026
+
+
+    
+import pdb #no entiendo bien como funciona esto
 
 pnino = 0
 pmenor = 30
@@ -10,7 +18,7 @@ descuentomayor = .12
 descuentoprofe = .10
 descuentoestudiante = .10
 
-DEBUG = False
+DEBUG = False #no entiendo bien como funciona esto
 
 tvisitantes = int(input("Cuantos visitantes son?"))
 
@@ -59,7 +67,7 @@ while contador < tvisitantes:
         descuento = 0
 
     if DEBUG:
-        pdb.set_trace()
+        pdb.set_trace() #no entiendo bien como funciona esto
     
 
     montodescuento = precio * descuento
