@@ -1,24 +1,19 @@
 
 
-
 dinero = 0
 
 while dinero < 100:
-    edad = int(input("edad? "))
+    costo = float(input("Costo del boleto (0, 30 o 45) "))
 
-    if edad < 3:
-        costo = 0
+    if costo == 0:
         print("menor de 3 años, sin cargo")
         continue
-    elif edad >= 3 and edad <= 17:
-        costo = 30
-    else:
-        costo = 45
 
-    dinero += costo
+    dinero +=costo
+
     if dinero >= 100:
         break
-
+ 
 print("dinero que se acumulo:", dinero)
 
 
