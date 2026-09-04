@@ -1,17 +1,28 @@
 
 
-def tabla():
-    matriz = []
-    for fila in range(1, tamano +1):
-        fila = []
-        for columna in range(1, tamano +1):
-            fila.append(fila * columna)
-        matriz.append(fila)
-    return matriz
+def hacer_cuadro(n):
+    datos = []
+    for a in range(1, n+1):
+        temp=[]
+        for b in range(1, n+1):
+            temp.append(a*b)
+        datos.append(temp)
+    return datos
 
-def imprimir_matriz(matriz):
-    for fila in matriz:
-        for numero in fila:
-            print(numero, end=' ')
+def mostrar_cuadro(datos):
+    for grupo in datos:
+        for valor in grupo:
+            print(valor, end=" ")
+        print()
 
-            
+def buscar_valor(datos, x, y):
+    return datos[x-1][y-1]
+
+n = int(input("Tamanño de la tabla: "))
+datos = hacer_cuadro(n)
+mostrar_cuadro(datos)
+
+x = int(input("Renglon: "))
+y = int(input("Columna: "))
+
+print(buscar_valor(datos, x, y))
