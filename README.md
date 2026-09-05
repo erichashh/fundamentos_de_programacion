@@ -10,3 +10,4 @@ Cambio a hacer en el futuro:
 
 Semana 4
 Aprendi a usar rjust para alinear a la derecha al momento de imprimir la tabla, cabe mencionar que use el asterisco para crear la tabla, no para acceder al numero especifico.
+Ignorar el archivo "clase.py"
