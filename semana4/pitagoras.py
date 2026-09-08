@@ -16,7 +16,8 @@ def hacer_cuadro(n):
 def mostrar_cuadro(datos):
     for grupo in datos:
         for valor in grupo:
-            print(str(valor).rjust(4), end="")
+            print(str(valor).rjust(4), end="") 
+            #uso rjust para alinear a la derecha 
         print()
 
 def buscar_valor(datos, x, y):
