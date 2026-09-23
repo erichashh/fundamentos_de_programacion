@@ -20,10 +20,3 @@ def sumar(calificaciones):
     return sum(calificaciones)
 
 print("suma de todo", sumar(nueva_tupla))
-
-
-
-
-
-
-
