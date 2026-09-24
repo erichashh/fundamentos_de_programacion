@@ -1,6 +1,7 @@
 
 import time
-
+import os
+print(os.getcwd())
 
 #DEFINICION DE FUNCIONES
 #-----------------------
@@ -29,11 +30,11 @@ def pantalla_carga():
 
 def pedir_fecha():
     dia = int(input("Día del pedido: "))
-    mes = int(input("Mes del pedido"))
-    anio = int(input("Año del pedido"))
+    mes = int(input("Mes del pedido: "))
+    anio = int(input("Año del pedido: "))
 
     fecha = dia, mes, anio
-    return
+    return fecha
 
 
 def imprimir_menu(matriz):
@@ -72,9 +73,30 @@ def escribir_archivo(Fecha):
     for numeros, nombre_archivo in archivos_disponibles.items():
         print(numeros + ". " + nombre_archivo)
 
-    eleccion= ("En que archivo quieres escribir?: ")
+    eleccion= input("En que archivo quieres escribir?: ")
     ruta = archivos_disponibles[eleccion]
-     
+
+    texto_usuario = input("Que quieres escribir? ")
+    dia, mes, anio = Fecha
+
+    with open(ruta, "a") as archivo:
+        archivo.write(fecha_texto + "-"+ texto_usuario+ "\n") 
+
+
+def reporte_cierre(Fecha):
+    dia, mes, anio = Fecha
+    fecha_texto = str(dia) + str(mes) + str(anio)
+
+    contenido_reporte = "Reporte de cierre" + fecha_texto + "\n"
+    contenido_reporte = contenido_reporte + "Total vendido día" + str(total_dia) + "\n"
+    contenido_reporte = contenido_reporte + "Pedidos diferidos" + str(cola_diferidos)+ "\n"
+    contenido_reporte = contenido_reporte + "Pedidos pendientes de pago" + str(cola_notificaciones)+ "\n"
+
+    with open("data/reporte_cierre.txt", "w") as archivo:
+        archivo.write(contenido_reporte)
+    print(contenido_reporte)
+    
+
 
 
 def registrar_pedido(Fecha):
@@ -102,16 +124,16 @@ def registrar_pedido(Fecha):
 
         #aqui ira el recibo
         dia, mes, anio = Fecha
-        fecha_texto = str(dia) + str(mes) + str(anio)
+        fecha_texto = str(dia) + "/" + str(mes) +"/"+ str(anio)
 
         contenido_recibo = "Fecha:" + fecha_texto +"\n"
-        contenido_recibo = contenido_recibo + "Cliente" + nombre_cliente +"\n"
-        contenido_recibo = contenido_recibo + "Direccion" + direccion +"\n"
-        contenido_recibo = contenido_recibo + "Total" + str(total)
+        contenido_recibo = contenido_recibo + "Cliente: " + nombre_cliente +"\n"
+        contenido_recibo = contenido_recibo + "Direccion: " + direccion +"\n"
+        contenido_recibo = contenido_recibo + "Total: " + str(total)
 
         #el nombre va a cambiar siempre
-        nombre_recibe = "sistema_pedidos/recibo" + nombre_cliente + hora + ".txt"
-        with open (nombre_cliente, "w") as archivo:
+        nombre_recibe = "data/recibo_" + nombre_cliente + "_" + str(hora) + ".txt"
+        with open (nombre_recibe, "w") as archivo:
             archivo.write(contenido_recibo)
 
 
@@ -150,6 +172,9 @@ matriz_menu = [
     ["7", "Salir"],
 ]
 
+
+Fecha = pedir_fecha()
+total_dia = 0
 cola_diferidos = []
 cola_notificaciones = []
 
@@ -163,6 +188,8 @@ while opcion != "7":
     opcion = input("¿Que quieres hacer?: ")
 
     if opcion == "1":
+        total_pedido = registrar_pedido(Fecha)
+        total_dia = total_dia + total_pedido
         print("()")
     elif opcion == "2":
         print("()")
