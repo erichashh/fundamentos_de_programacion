@@ -1,6 +1,6 @@
 
 import time
-
+import pdb
 
 #DEFINICION DE FUNCIONES
 #-----------------------
@@ -8,6 +8,7 @@ import time
 
 def bienvenida():
     nombre = input("¿Cual es tu nombre?")
+    #pide el nombre del usuario (empleado) que operara el sistema, deja un mensaje de bienvenida
 
     #linea para llevar orden y que se vea bonito
     linea = "-" * 40 
@@ -21,12 +22,15 @@ def bienvenida():
     return nombre
 
 
+#una pantalla de carga del sistema, dura 5 segundos en total, se usa al iniciar el programa y cada vez que se reinicia por inactividad
 def pantalla_carga():
     for i in range(5):
         print("cargando"+ "." * (i+1))
         time.sleep(1)
 
 
+
+# solicita dia, mes y año por separado y los guarda en una tupla, se reutiliza en todo el programa para poner fechas
 def pedir_fecha():
     dia = int(input("Día del pedido: "))
     mes = int(input("Mes del pedido: "))
@@ -35,12 +39,12 @@ def pedir_fecha():
     fecha = dia, mes, anio
     return fecha
 
-
+# recorre la matriz de opciones del menu e imprime cada fila en formato .txt
 def imprimir_menu(matriz):
     for fila in matriz:
         print(fila[0]+ "." + fila[1])
 
-
+# muestra el diccionaro de archivos disponibles para lectura y muestra el contenido del que el usuasrio elija, protegida con keyerror
 def leer_archivo():
     archivos_disponibles = {
         "1": "data/menu.txt",
@@ -65,18 +69,25 @@ def leer_archivo():
     except FileNotFoundError:
         print("El archivon no se encontro en la ruta esperada")
 
+#muestra el contenido fijo de data/menu.txt protegida por si el archiuvo no existe en la ruta esperada
 def consultar_menu():
-    with open("data/menu.txt", "r") as archivo:
-        contenido = archivo.read()
-        print("-Menu de platos disponible-")
-        print(contenido)
+    try:
+        with open("data/menu.txt", "r") as archivo:
+            contenido = archivo.read()
+            print("-Menu de platos disponible-")
+            print(contenido)
+    except FileNotFoundError:
+        print("el archivo no esta en la ruta esperada")
 
+#muestra en pantalla las dos listas globales que se van llenando durante la sesion, pedidos diferidos, y pedidos pendientes de pago
 def pendientes():
     print("-Pedidos diferidos-")
     print(cola_diferidos)
     print("-Pedidos pendientes de pago-")
     print(cola_notificaciones)
 
+
+#deja anexar una linea de texto con fecha a uno de los archivos disponibles, el usuario lo elige por numero y escribe, protegida con try-except
 
 def escribir_archivo(Fecha):
     archivos_disponibles = {
@@ -91,9 +102,8 @@ def escribir_archivo(Fecha):
         print(numeros + ". " + nombre_archivo)
 
     eleccion= input("En que archivo quieres escribir?: ")
-    ruta = archivos_disponibles[eleccion]
-
     texto_usuario = input("Que quieres escribir? ")
+
     dia, mes, anio = Fecha
     fecha_texto = str(dia) + "/" + str(mes) +"/"+ str(anio)
 
@@ -107,11 +117,6 @@ def escribir_archivo(Fecha):
         print("El archivo no se encontro en la ruta esperada")
 
 
-
-    with open(ruta, "a") as archivo:
-        archivo.write(fecha_texto + "-"+ texto_usuario+ "\n") 
-
-
 def reporte_cierre(Fecha):
     dia, mes, anio = Fecha
     fecha_texto = str(dia) + "/" + str(mes) +"/"+ str(anio)
@@ -121,12 +126,17 @@ def reporte_cierre(Fecha):
     contenido_reporte = contenido_reporte + "Pedidos diferidos: " + str(cola_diferidos)+ "\n"
     contenido_reporte = contenido_reporte + "Pedidos pendientes de pago: " + str(cola_notificaciones)+ "\n"
 
-    with open("data/reporte_cierre.txt", "w") as archivo:
-        archivo.write(contenido_reporte)
-    print(contenido_reporte)
-    
+    try:
+        with open("data/reporte_cierre.txt", "w") as archivo:
+            archivo.write(contenido_reporte)
+        print(contenido_reporte)
+    except FileNotFoundError:
+        print("no se pudo guardar el archivo, la ruta no existe")
+    except PermissionError:
+        print("no se guardo el archivo, no tienes los permisos")
+        
 
-limite_inactividad = 5
+limite_inactividad = 600
 
 def revisar_inactividad(ultima_interaccion):
     ahora =  time.time()
@@ -134,19 +144,29 @@ def revisar_inactividad(ultima_interaccion):
 
     if tiempo_pasado >= limite_inactividad:
         for intento in range(2):
-            continuar_sesion = input("Pasaron 10 minutos de inactividad, quieres seguir usandolo? (s/n): ")
-            if continuar_sesion == "s" or continuar_sesion == "n":
+            continuar_sesion = input("Pasaron 10 minutos de inactividad, quieres seguir usandolo? (si/no): ")
+            if continuar_sesion == "si" or continuar_sesion == "no":
                 break
             else:
                 print("invalido, intenta de nuevo")
 
-        if continuar_sesion == "n":
+        if continuar_sesion == "no":
             pantalla_carga()
             return "inicio"
         return time.time() #reinicia el contador
     return ultima_interaccion #aun no pasan 10 mins
         
 
+"""es el flujo principal del programa, nombre del cliente, hora, dirrecion, platos y precios, calculando el envio segun
+donde se encuentre, generacion del recibo y confirmacion de pago 
+
+reglas del negocio:
+    -Solo se registran pedidos entre las 8 y las 16 horas (formato 24h).
+      Fuera de ese rango, el pedido se manda a la cola de diferidos.
+    - Si la colonia del cliente es "s", el envio es gratis; si no, se cobran $40.
+    - Si el pago no es en efectivo y la transferencia no se confirma,
+      el pedido se manda a la cola de notificaciones pendientes de pago.
+"""
 
 def registrar_pedido(Fecha):
     nombre_cliente = input("Nombre del cliente: ")
@@ -196,8 +216,14 @@ def registrar_pedido(Fecha):
 
         #el nombre va a cambiar siempre
         nombre_recibe = "data/recibo_" + nombre_cliente + "_" + str(hora) + ".txt"
-        with open (nombre_recibe, "w") as archivo:
-            archivo.write(contenido_recibo)
+        try:
+            with open (nombre_recibe, "w") as archivo:
+                archivo.write(contenido_recibo)
+        except FileNotFoundError:
+            print("No se guardo el archivo, no existe la ruta")
+        except PermissionError:
+            print("no se guardo el archivo, no tienes los permisoss")
+
 
 
         pago = input("Pago en efectivo (s/n)")
@@ -252,15 +278,22 @@ while opcion != "7":
     imprimir_menu(matriz_menu)
     opcion = input("¿Que quieres hacer?: ")
 
+    # se guarda el resultado en una variable intermedia antes de decidir que hacer con el,
+    #porque revisar_inactividad() puede regresar dos tipos de valor distintos, un numero (time.time()) o el string
+    # "inicio"
+
+
     resultado = revisar_inactividad(ultima_interaccion)
 
     if resultado == "inicio":
+        # el usuario eligio no coninuar tras el timeout, se regresa a la pantalla de inicio, se reinicia el contador
         nombre_usuario = bienvenida()
         Fecha = pedir_fecha()
         ultima_interaccion = time.time()
         continue
 
     ultima_interaccion = resultado
+
 
     if opcion == "1":
         total_pedido = registrar_pedido(Fecha)
