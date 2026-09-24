@@ -126,6 +126,26 @@ def reporte_cierre(Fecha):
     print(contenido_reporte)
     
 
+limite_inactividad = 5
+
+def revisar_inactividad(ultima_interaccion):
+    ahora =  time.time()
+    tiempo_pasado = ahora - ultima_interaccion
+
+    if tiempo_pasado >= limite_inactividad:
+        for intento in range(2):
+            continuar_sesion = input("Pasaron 10 minutos de inactividad, quieres seguir usandolo? (s/n): ")
+            if continuar_sesion == "s" or continuar_sesion == "n":
+                break
+            else:
+                print("invalido, intenta de nuevo")
+
+        if continuar_sesion == "n":
+            pantalla_carga()
+            return "inicio"
+        return time.time() #reinicia el contador
+    return ultima_interaccion #aun no pasan 10 mins
+        
 
 
 def registrar_pedido(Fecha):
@@ -226,10 +246,14 @@ pantalla_carga()
 Fecha = pedir_fecha()
 
 opcion = ""
+ultima_interaccion = time.time()
 
 while opcion != "7":
     imprimir_menu(matriz_menu)
     opcion = input("¿Que quieres hacer?: ")
+
+    ultima_interaccion = revisar_inactividad(ultima_interaccion)
+
 
     if opcion == "1":
         total_pedido = registrar_pedido(Fecha)
