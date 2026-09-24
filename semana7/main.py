@@ -252,8 +252,15 @@ while opcion != "7":
     imprimir_menu(matriz_menu)
     opcion = input("¿Que quieres hacer?: ")
 
-    ultima_interaccion = revisar_inactividad(ultima_interaccion)
+    resultado = revisar_inactividad(ultima_interaccion)
 
+    if resultado == "inicio":
+        nombre_usuario = bienvenida()
+        Fecha = pedir_fecha()
+        ultima_interaccion = time.time()
+        continue
+
+    ultima_interaccion = resultado
 
     if opcion == "1":
         total_pedido = registrar_pedido(Fecha)
