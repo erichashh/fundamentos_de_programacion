@@ -1,7 +1,6 @@
 
 import time
-import os
-print(os.getcwd())
+
 
 #DEFINICION DE FUNCIONES
 #-----------------------
@@ -54,11 +53,29 @@ def leer_archivo():
         print(clave + ". "+ valor)
 
     eleccion = input("Cual quieres abrir? (numero): ")
-    camino = archivos_disponibles[eleccion]
 
-    with open(camino, "r") as archivo: 
+    #aqui agregare try-except, me gusta porque tiene dos puntos de falla
+    try:
+        camino = archivos_disponibles[eleccion]
+        with open(camino, "r") as archivo: 
+            contenido = archivo.read()
+            print(contenido)
+    except KeyError:
+            print("esa opcion no existe, intenta con un numero valido")
+    except FileNotFoundError:
+        print("El archivon no se encontro en la ruta esperada")
+
+def consultar_menu():
+    with open("data/menu.txt", "r") as archivo:
         contenido = archivo.read()
+        print("-Menu de platos disponible-")
         print(contenido)
+
+def pendientes():
+    print("-Pedidos diferidos-")
+    print(cola_diferidos)
+    print("-Pedidos pendientes de pago-")
+    print(cola_notificaciones)
 
 
 def escribir_archivo(Fecha):
@@ -78,6 +95,18 @@ def escribir_archivo(Fecha):
 
     texto_usuario = input("Que quieres escribir? ")
     dia, mes, anio = Fecha
+    fecha_texto = str(dia) + "/" + str(mes) +"/"+ str(anio)
+
+    try:
+        ruta = archivos_disponibles[eleccion]
+        with open(ruta,"a") as archivo:
+            archivo.write(fecha_texto + "-"+texto_usuario +"\n") 
+    except KeyError:
+        print("esa opcion no existe, intenta con un numero valido")
+    except FileNotFoundError:
+        print("El archivo no se encontro en la ruta esperada")
+
+
 
     with open(ruta, "a") as archivo:
         archivo.write(fecha_texto + "-"+ texto_usuario+ "\n") 
@@ -85,12 +114,12 @@ def escribir_archivo(Fecha):
 
 def reporte_cierre(Fecha):
     dia, mes, anio = Fecha
-    fecha_texto = str(dia) + str(mes) + str(anio)
+    fecha_texto = str(dia) + "/" + str(mes) +"/"+ str(anio)
 
     contenido_reporte = "Reporte de cierre" + fecha_texto + "\n"
-    contenido_reporte = contenido_reporte + "Total vendido día" + str(total_dia) + "\n"
-    contenido_reporte = contenido_reporte + "Pedidos diferidos" + str(cola_diferidos)+ "\n"
-    contenido_reporte = contenido_reporte + "Pedidos pendientes de pago" + str(cola_notificaciones)+ "\n"
+    contenido_reporte = contenido_reporte + "Total vendido dia: " + str(total_dia) + "\n"
+    contenido_reporte = contenido_reporte + "Pedidos diferidos: " + str(cola_diferidos)+ "\n"
+    contenido_reporte = contenido_reporte + "Pedidos pendientes de pago: " + str(cola_notificaciones)+ "\n"
 
     with open("data/reporte_cierre.txt", "w") as archivo:
         archivo.write(contenido_reporte)
@@ -101,16 +130,30 @@ def reporte_cierre(Fecha):
 
 def registrar_pedido(Fecha):
     nombre_cliente = input("Nombre del cliente: ")
-    hora = int(input("Hora del pedido: "))
 
+    #aqui uso otro try para asegurarnos que la hora introducida sea la correcta
+    try:
+        hora = int(input("Hora del pedido: "))
+    except ValueError:
+        print("La hora debe de ser un numero entre las 8 y las 16 horas (formato 24 hrs), intenta de nuevo")
+        return 0
+    
     if hora >= 8 and hora <= 16:
         direccion = input("Direccion: ") # usar en recibo reporte
-        cantidad = int(input("Cuantos platos?"))
+        try:
+            cantidad = int(input("Cuantos platos?"))
+        except ValueError:
+            print("la cantidad de platos debe de ser un numero, intenta de nuevo")
+            return 0
 
         subtotal = 0
         for i in range(cantidad):
             plato = input("Nombre del plato: ")
-            precio = float(input("Precio del plato:"))
+            try:
+                precio = float(input("Precio del plato:"))
+            except ValueError:
+                print("El precio debe de ser un numero, intenta de nuevo")
+                return 0
             subtotal = subtotal + precio
 
         colonia = input("Esta en la colonia? (s/n)")
@@ -163,7 +206,7 @@ def registrar_pedido(Fecha):
 #-----------------------------
 
 matriz_menu = [
-    ["1", "Registar pedido"],
+    ["1", "Registrar pedido"],
     ["2", "Ver el menu de platos"],
     ["3", "Leer archivo"],
     ["4", "Escribir o anexar archivo"],
@@ -173,13 +216,14 @@ matriz_menu = [
 ]
 
 
-Fecha = pedir_fecha()
+
 total_dia = 0
 cola_diferidos = []
 cola_notificaciones = []
 
 nombre_usuario = bienvenida()
 pantalla_carga()
+Fecha = pedir_fecha()
 
 opcion = ""
 
@@ -190,17 +234,16 @@ while opcion != "7":
     if opcion == "1":
         total_pedido = registrar_pedido(Fecha)
         total_dia = total_dia + total_pedido
-        print("()")
     elif opcion == "2":
-        print("()")
+        consultar_menu()
     elif opcion == "3":
-        print("()")
+        leer_archivo()
     elif opcion == "4":
-        print("()")
+        escribir_archivo(Fecha)
     elif opcion == "5":
-        print("()")
+        reporte_cierre(Fecha)
     elif opcion == "6":
-        print("()")
+        pendientes()
     elif opcion == "7":
         print("Saliendo")
     else:
