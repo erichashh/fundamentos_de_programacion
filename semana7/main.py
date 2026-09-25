@@ -252,6 +252,8 @@ def registrar_pedido(Fecha):
             print("No se guardo el archivo, no existe la ruta")
         except PermissionError:
             print("no se guardo el archivo, no tienes los permisoss")
+        except OSError:
+            print("No se guardo el recibo, el nombre del cliente no puede tener caracteres especiales")
 
 
 
@@ -259,7 +261,7 @@ def registrar_pedido(Fecha):
         if pago == "s":
             print("pedido enviado a cocina")
         else:
-            confirmado = input("Transferencia confirmada (s/n): ")
+            confirmado = preguntar_sn("Transferencia confirmada (s/n): ")
             if confirmado == "s":
                 print("pedido enviado a cocina")
             else:
