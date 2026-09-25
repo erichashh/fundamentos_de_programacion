@@ -32,10 +32,24 @@ def pantalla_carga():
 
 # solicita dia, mes y año por separado y los guarda en una tupla, se reutiliza en todo el programa para poner fechas
 def pedir_fecha():
-    dia = int(input("Día del pedido: "))
-    mes = int(input("Mes del pedido: "))
-    anio = int(input("Año del pedido: "))
+    while True:
+        try:
+            dia = int(input("Día del pedido: "))
+            mes = int(input("Mes del pedido: "))
+            anio = int(input("Año del pedido: "))
+        except ValueError:
+            print("Debes ingresar numeros")
+            continue
 
+        if dia < 1 or dia > 31:
+            print("el dia debe ser entre el 1 y el 31")
+        elif mes < 1 or mes > 12:
+            print("el mes debe ser entre el 1 y el 12")
+        elif anio <= 0:
+            print("debe de ser un numero positivo")
+        else:
+            break #fecha valida se sale del ciclo
+    
     fecha = dia, mes, anio
     return fecha
 
@@ -143,12 +157,14 @@ def revisar_inactividad(ultima_interaccion):
     tiempo_pasado = ahora - ultima_interaccion
 
     if tiempo_pasado >= limite_inactividad:
-        for intento in range(2):
-            continuar_sesion = input("Pasaron 10 minutos de inactividad, quieres seguir usandolo? (si/no): ")
-            if continuar_sesion == "si" or continuar_sesion == "no":
+        continuar_sesion = "no" #si el usuario no responde bien, se asume que NO, entonces a fuerzas necesitas un SI para continuar
+        for intento in range(2):  
+            respuesta= input("Pasaron 10 minutos de inactividad, quieres seguir usandolo? (si/no): ")
+            if respuesta == "si" or respuesta == "no":
+                continuar_sesion = respuesta
                 break
             else:
-                print("invalido, intenta de nuevo")
+                print("invalido")
 
         if continuar_sesion == "no":
             pantalla_carga()
@@ -180,23 +196,36 @@ def registrar_pedido(Fecha):
     
     if hora >= 8 and hora <= 16:
         direccion = input("Direccion: ") # usar en recibo reporte
-        try:
-            cantidad = int(input("Cuantos platos?"))
-        except ValueError:
-            print("la cantidad de platos debe de ser un numero, intenta de nuevo")
-            return 0
+        while True:
+            try:
+                cantidad = int(input("Cuantos platos?"))
+            except ValueError:
+                print("la cantidad de platos debe de ser un numero, intenta de nuevo")
+                continue
+            if cantidad < 1:
+                print("debes de pedir al menos 1 plato")
+            elif cantidad > 10:
+                print("Puedes pedir máximo 10 platos por orden")
+            else:
+                break
 
         subtotal = 0
         for i in range(cantidad):
             plato = input("Nombre del plato: ")
-            try:
-                precio = float(input("Precio del plato:"))
-            except ValueError:
-                print("El precio debe de ser un numero, intenta de nuevo")
-                return 0
+            while True:
+                try:
+                    precio = float(input("Precio del plato:"))
+                except ValueError:
+                    print("El precio debe de ser un numero, intenta de nuevo")
+                    continue
+                if precio <0:
+                    print("precio no puede ser negativo")
+                else:
+                    break
+
             subtotal = subtotal + precio
 
-        colonia = input("Esta en la colonia? (s/n)")
+        colonia = preguntar_sn("Esta en la colonia? (s/n)")
         if colonia == "s":
             envio = 0
         else:
@@ -226,7 +255,7 @@ def registrar_pedido(Fecha):
 
 
 
-        pago = input("Pago en efectivo (s/n)")
+        pago = preguntar_sn("Pago en efectivo (s/n)")
         if pago == "s":
             print("pedido enviado a cocina")
         else:
@@ -244,8 +273,15 @@ def registrar_pedido(Fecha):
         print("Fuera de horario, pedido para mañana")
         return 0
 
+#creo esta funcion porque en cierta parte del codigo el usuario a FUERZAS debe de responder
+# "s" o "n", para no repetir la validacion 3 veces
 
-    
+def preguntar_sn(mensaje):
+    while True:
+        respuesta =input(mensaje)
+        if respuesta == "s" or respuesta == "n":
+            return respuesta
+        print("debes de responder a fuerzas 's' o 'n'")
 
 
 # FLUJO PRINCIPAL DEL PROGRAMA
