@@ -1,5 +1,5 @@
 
-IMPORTANTE PARA LA CALIFICACIÓN!!
+IMPORTANTE PARA TOMAR EN CUENTA Y PARA MI!!
 
 Este reporte se elaboró siguiendo estrictamente los lineamientos de la Actividad Evaluable 7
 Tras revisar a detalle los 10 requerimientos técnicos, la estructura del entregable principal y la rúbrica de evaluación 
