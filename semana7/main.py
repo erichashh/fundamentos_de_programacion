@@ -266,7 +266,7 @@ def registrar_pedido(Fecha):
         contenido_recibo = "Fecha:" + fecha_texto +"\n"
         contenido_recibo = contenido_recibo + "Cliente: " + nombre_cliente +"\n"
         contenido_recibo = contenido_recibo + "Direccion: " + direccion +"\n"
-        contenido_recibo = contenido_recibo + "Platos\n: "
+        contenido_recibo = contenido_recibo + "Platos:\n"
         for linea_plato in detalle_pedido:
             contenido_recibo = contenido_recibo + " " + linea_plato + "\n"
         contenido_recibo = contenido_recibo + "Total: " + str(total)
