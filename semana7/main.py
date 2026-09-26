@@ -6,19 +6,22 @@ import pdb
 #-----------------------
 
 
+
+ancho = 50  # ancho estandar usado en las lineas y encabezados de la consola
+
+def separador(caracter="-"):
+    print(caracter * ancho)
+
+def encabezado(titulo):
+    print()
+    separador("=")
+    print(titulo.center(ancho))
+    separador("=")
+
 def bienvenida():
-    nombre = input("¿Cual es tu nombre?")
+    nombre = input("¿Cual es tu nombre?: ")
+    encabezado("BIENVENIDO, "+nombre)
     #pide el nombre del usuario (empleado) que operara el sistema, deja un mensaje de bienvenida
-
-    #linea para llevar orden y que se vea bonito
-    linea = "-" * 40 
-    mensaje = "Bienvenido al sistema para pedir " + nombre
-
-    #mostrar la bienvenida
-    print(linea)
-    print(mensaje)
-    print(linea)
-
     return nombre
 
 
@@ -32,10 +35,11 @@ def pantalla_carga():
 
 # solicita dia, mes y año por separado y los guarda en una tupla, se reutiliza en todo el programa para poner fechas
 def pedir_fecha():
+    encabezado("FECHA")
     while True:
         try:
             dia = int(input("Día del pedido: "))
-            mes = int(input("Mes del pedido: "))
+            mes = int(input("Mes del pedido (numero del mes): "))
             anio = int(input("Año del pedido: "))
         except ValueError:
             print("Debes ingresar numeros")
@@ -51,15 +55,21 @@ def pedir_fecha():
             break #fecha valida se sale del ciclo
     
     fecha = dia, mes, anio
+    separador("=")
     return fecha
 
 # recorre la matriz de opciones del menu e imprime cada fila en formato .txt
 def imprimir_menu(matriz):
+    separador("=")
+    print("MENU PRINCIPAL".center(ancho))
+    separador("-")
     for fila in matriz:
         print(fila[0]+ "." + fila[1])
+    separador("=")
 
 # muestra el diccionaro de archivos disponibles para lectura y muestra el contenido del que el usuasrio elija, protegida con keyerror
 def leer_archivo():
+    encabezado("LEER ARCHIVO")
     archivos_disponibles = {
         "1": "data/menu.txt",
         "2": "data/colonias.txt",
@@ -82,9 +92,11 @@ def leer_archivo():
             print("esa opcion no existe, intenta con un numero valido")
     except FileNotFoundError:
         print("El archivon no se encontro en la ruta esperada")
+    separador("=")
 
 #muestra el contenido fijo de data/menu.txt protegida por si el archiuvo no existe en la ruta esperada
 def consultar_menu():
+    encabezado("MENU DE PLATOS")
     try:
         with open("data/menu.txt", "r") as archivo:
             contenido = archivo.read()
@@ -92,18 +104,22 @@ def consultar_menu():
             print(contenido)
     except FileNotFoundError:
         print("el archivo no esta en la ruta esperada")
+    separador("=")
 
 #muestra en pantalla las dos listas globales que se van llenando durante la sesion, pedidos diferidos, y pedidos pendientes de pago
 def pendientes():
+    encabezado("PEDIDOS DIFERIDOS Y PENDIENTES")
     print("-Pedidos diferidos-")
     print(cola_diferidos)
     print("-Pedidos pendientes de pago-")
     print(cola_notificaciones)
+    separador("=")
 
 
 #deja anexar una linea de texto con fecha a uno de los archivos disponibles, el usuario lo elige por numero y escribe, protegida con try-except
 
 def escribir_archivo(Fecha):
+    encabezado("ESCRIBIR/ANEXAR ARCHIVO")
     archivos_disponibles = {
         "1": "data/menu.txt",
         "2": "data/colonias.txt",
@@ -129,13 +145,15 @@ def escribir_archivo(Fecha):
         print("esa opcion no existe, intenta con un numero valido")
     except FileNotFoundError:
         print("El archivo no se encontro en la ruta esperada")
+    separador("=")
 
 
 def reporte_cierre(Fecha):
+    encabezado("REPORTE CIERRE")
     dia, mes, anio = Fecha
     fecha_texto = str(dia) + "/" + str(mes) +"/"+ str(anio)
 
-    contenido_reporte = "Reporte de cierre" + fecha_texto + "\n"
+    contenido_reporte = "Reporte de cierre " + fecha_texto + "\n"
     contenido_reporte = contenido_reporte + "Total vendido dia: " + str(total_dia) + "\n"
     contenido_reporte = contenido_reporte + "Pedidos diferidos: " + str(cola_diferidos)+ "\n"
     contenido_reporte = contenido_reporte + "Pedidos pendientes de pago: " + str(cola_notificaciones)+ "\n"
@@ -148,6 +166,7 @@ def reporte_cierre(Fecha):
         print("no se pudo guardar el archivo, la ruta no existe")
     except PermissionError:
         print("no se guardo el archivo, no tienes los permisos")
+    separador("=")
         
 
 limite_inactividad = 600
@@ -185,20 +204,24 @@ reglas del negocio:
 """
 
 def registrar_pedido(Fecha):
+    encabezado("REGISTRAR PEDIDO")
     nombre_cliente = input("Nombre del cliente: ")
 
     #aqui uso otro try para asegurarnos que la hora introducida sea la correcta
-    try:
-        hora = int(input("Hora del pedido: "))
-    except ValueError:
-        print("La hora debe de ser un numero entre las 8 y las 16 horas (formato 24 hrs), intenta de nuevo")
-        return 0
-    
+    while True:
+        try:
+            hora = int(input("Hora del pedido (formato 24hrs): "))
+        except ValueError:
+            print("La hora debe de ser un numero entre las 8 y las 16 horas (formato 24 hrs), y un numero (no letras)")
+            continue
+        else: 
+            break
+        
     if hora >= 8 and hora <= 16:
         direccion = input("Direccion: ") # usar en recibo reporte
         while True:
             try:
-                cantidad = int(input("Cuantos platos?"))
+                cantidad = int(input("Cuantos platos?: "))
             except ValueError:
                 print("la cantidad de platos debe de ser un numero, intenta de nuevo")
                 continue
@@ -210,6 +233,7 @@ def registrar_pedido(Fecha):
                 break
 
         subtotal = 0
+        detalle_pedido = [] # aqui se iran guardando los platos y precios del pedido
         for i in range(cantidad):
             plato = input("Nombre del plato: ")
             while True:
@@ -224,6 +248,7 @@ def registrar_pedido(Fecha):
                     break
 
             subtotal = subtotal + precio
+            detalle_pedido.append(plato + "- $"+str(precio)) #guarda nombre y precio
 
         colonia = preguntar_sn("Esta en la colonia? (s/n)")
         if colonia == "s":
@@ -232,7 +257,7 @@ def registrar_pedido(Fecha):
             envio = 40
 
         total = subtotal + envio
-        print("total a pagar:", total)
+        print("total a pagar: $", total)
 
         #aqui ira el recibo
         dia, mes, anio = Fecha
@@ -241,6 +266,9 @@ def registrar_pedido(Fecha):
         contenido_recibo = "Fecha:" + fecha_texto +"\n"
         contenido_recibo = contenido_recibo + "Cliente: " + nombre_cliente +"\n"
         contenido_recibo = contenido_recibo + "Direccion: " + direccion +"\n"
+        contenido_recibo = contenido_recibo + "Platos\n: "
+        for linea_plato in detalle_pedido:
+            contenido_recibo = contenido_recibo + " " + linea_plato + "\n"
         contenido_recibo = contenido_recibo + "Total: " + str(total)
 
         #el nombre va a cambiar siempre
@@ -267,12 +295,14 @@ def registrar_pedido(Fecha):
             else:
                 cola_notificaciones.append(nombre_cliente)
                 print("pedido pendiente de pago")
-
+        
+        separador("=")
         return total
 
     else:
         cola_diferidos.append(nombre_cliente)
         print("Fuera de horario, pedido para mañana")
+        separador("=")
         return 0
 
 #creo esta funcion porque en cierta parte del codigo el usuario a FUERZAS debe de responder

@@ -1,5 +1,18 @@
+Menu Restaurante
 
-
-Chilaquiles
-Quesadilla 
-Tacos
+Tacos al pastor - 25.00
+Tacos de bistec - 22.00
+Quesadillas de queso - 20.00
+Enchiladas verdes - 65.00
+Enchiladas rojas - 65.00
+Pozole rojo - 85.00
+Chiles rellenos - 70.00
+Tamales de rajas - 18.00
+Sopes de chorizo - 24.00
+Flautas de pollo - 55.00
+Tostadas de tinga - 28.00
+Mole con pollo - 90.00
+Chilaquiles verdes - 60.00
+Torta de milanesa - 45.00
+Guacamole con totopos - 35.00
+ 
