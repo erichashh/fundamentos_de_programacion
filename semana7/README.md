@@ -10,3 +10,4 @@ Cabe recalcar que al momento de PRESENTAR mi proyecto SI se incluiran para cumpl
 SI los exige ahi. Donde la fecha de entrega es el 2 de octubre de 2026.
 
 
+Profe lo invito a que vea todo mi historial de commits, realmente lo hice paso por paso jaja, fue una travesía muy divertida y complicada
