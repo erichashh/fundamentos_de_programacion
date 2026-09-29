@@ -1,6 +1,8 @@
 
 import time
 import pdb
+import math
+
 
 #DEFINICION DE FUNCIONES
 #-----------------------
@@ -242,7 +244,9 @@ def registrar_pedido(Fecha):
                 except ValueError:
                     print("El precio debe de ser un numero, intenta de nuevo")
                     continue
-                if precio <0:
+                if not math.isfinite(precio):
+                    print("El precio del plato debe de ser un numero finito")
+                elif precio <0:
                     print("precio no puede ser negativo")
                 else:
                     break
